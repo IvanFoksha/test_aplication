@@ -5,6 +5,7 @@ from pathlib import Path
 # BASE_DIR is .../test_aplication/
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+
 class Settings(BaseSettings):
     DATABASE_URL: str
     API_KEY: str = "your_default_api_key"
