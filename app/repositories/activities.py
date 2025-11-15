@@ -26,5 +26,8 @@ class ActivityRepository(BaseRepository[models.Activity]):
             SELECT id FROM activity_tree
         """)
 
-        result = self.db.execute(cte_query, {"activity_id": activity_id}).fetchall()
+        result = self.db.execute(
+            cte_query,
+            {"activity_id": activity_id}
+        ).fetchall()
         return [row[0] for row in result]

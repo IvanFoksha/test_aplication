@@ -9,7 +9,10 @@ class BuildingService:
         self.building_repo = building_repo
 
     def get_all_buildings(self, skip: int = 0, limit: int = 100):
-        return self.building_repo.get_all_with_organizations(skip=skip, limit=limit)
+        return self.building_repo.get_all_with_organizations(
+            skip=skip,
+            limit=limit
+        )
 
 
 def get_building_service(db: Session = Depends(get_db)) -> BuildingService:

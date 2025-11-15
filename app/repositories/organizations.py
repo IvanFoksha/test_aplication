@@ -7,7 +7,10 @@ class OrganizationRepository(BaseRepository[models.Organization]):
     def __init__(self, db: Session):
         super().__init__(models.Organization, db)
 
-    def get_by_id_with_details(self, organization_id: int) -> models.Organization | None:
+    def get_by_id_with_details(
+        self,
+        organization_id: int
+    ) -> models.Organization | None:
         return (
             self.db.query(self.model)
             .options(

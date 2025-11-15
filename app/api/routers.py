@@ -3,7 +3,10 @@ from fastapi import APIRouter, Depends, Query
 from app.db import schemas
 from app.api.dependencies import get_api_key
 from app.services.buildings import BuildingService, get_building_service
-from app.services.organizations import OrganizationService, get_organization_service
+from app.services.organizations import (
+    OrganizationService,
+    get_organization_service,
+)
 
 router = APIRouter(
     prefix="/api/v1",
@@ -23,10 +26,13 @@ def read_buildings(
     return service.get_all_buildings(skip=skip, limit=limit)
 
 
-@router.get("/organizations/{organization_id}", response_model=schemas.Organization)
+@router.get(
+    "/organizations/{organization_id}",
+    response_model=schemas.Organization
+)
 def read_organization(
-    organization_id: int, 
-    service: OrganizationService = Depends(get_organization_service)
+    organization_id: int,
+    service: OrganizationService = Depends(get_organization_service),
 ):
     """
     Retrieve a single organization by its ID.
@@ -34,9 +40,12 @@ def read_organization(
     return service.get_organization_by_id(organization_id)
 
 
-@router.get("/buildings/{building_id}/organizations/", response_model=List[schemas.Organization])
+@router.get(
+    "/buildings/{building_id}/organizations/",
+    response_model=List[schemas.Organization]
+)
 def read_organizations_in_building(
-    building_id: int, 
+    building_id: int,
     service: OrganizationService = Depends(get_organization_service)
 ):
     """
@@ -45,9 +54,12 @@ def read_organizations_in_building(
     return service.get_organizations_in_building(building_id)
 
 
-@router.get("/activities/{activity_id}/organizations/", response_model=List[schemas.Organization])
+@router.get(
+    "/activities/{activity_id}/organizations/",
+    response_model=List[schemas.Organization]
+)
 def read_organizations_by_activity(
-    activity_id: int, 
+    activity_id: int,
     service: OrganizationService = Depends(get_organization_service)
 ):
     """
@@ -56,9 +68,12 @@ def read_organizations_by_activity(
     return service.get_organizations_by_activity(activity_id)
 
 
-@router.get("/organizations/search/name/", response_model=List[schemas.Organization])
+@router.get(
+    "/organizations/search/name/",
+    response_model=List[schemas.Organization]
+)
 def search_organizations_by_name(
-    name: str, 
+    name: str,
     service: OrganizationService = Depends(get_organization_service)
 ):
     """
@@ -67,23 +82,39 @@ def search_organizations_by_name(
     return service.search_by_name(name)
 
 
-@router.get("/organizations/search/activity/", response_model=List[schemas.Organization])
+@router.get(
+    "/organizations/search/activity/",
+    response_model=List[schemas.Organization],
+)
 def search_organizations_by_activity_tree(
-    activity_id: int, 
-    service: OrganizationService = Depends(get_organization_service)
+    activity_id: int,
+    service: OrganizationService = Depends(get_organization_service),
 ):
     """
-    Search for organizations by a given activity, including all its sub-activities.
+    Search for organizations by a given activity,
+    including all its sub-activities.
     """
     return service.search_by_activity_tree(activity_id)
 
 
-@router.get("/organizations/search/location/", response_model=List[schemas.Organization])
+@router.get(
+    "/organizations/search/location/",
+    response_model=List[schemas.Organization]
+)
 def search_organizations_by_location(
-    latitude: float = Query(..., description="Latitude of the search center"),
-    longitude: float = Query(..., description="Longitude of the search center"),
-    radius: float = Query(..., description="Search radius in kilometers"),
-    service: OrganizationService = Depends(get_organization_service)
+    latitude: float = Query(
+        ...,
+        description="Latitude of the search center"
+    ),
+    longitude: float = Query(
+        ...,
+        description="Longitude of the search center"
+    ),
+    radius: float = Query(
+        ...,
+        description="Search radius in kilometers"
+    ),
+    service: OrganizationService = Depends(get_organization_service),
 ):
     """
     Search for organizations within a given radius from a central point.
