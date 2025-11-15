@@ -36,6 +36,7 @@ class Activity(ActivityBase):
     class Config:
         orm_mode = True
 
+
 Activity.update_forward_refs()
 
 
@@ -75,5 +76,6 @@ class Organization(OrganizationBase):
 
     class Config:
         orm_mode = True
+
 
 Building.update_forward_refs()

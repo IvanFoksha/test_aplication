@@ -62,7 +62,10 @@ class Activity(Base):
     name = Column(String, index=True)
     parent_id = Column(Integer, ForeignKey("activities.id"), nullable=True)
 
-    parent = relationship("Activity", remote_side=[id], back_populates="children")
+    parent = relationship(
+        "Activity", remote_side=[id],
+        back_populates="children"
+    )
     children = relationship("Activity", back_populates="parent")
     organizations = relationship(
         "Organization",

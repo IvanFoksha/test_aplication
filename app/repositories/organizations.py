@@ -22,7 +22,10 @@ class OrganizationRepository(BaseRepository[models.Organization]):
             .first()
         )
 
-    def get_by_building_id(self, building_id: int) -> list[models.Organization]:
+    def get_by_building_id(
+        self,
+        building_id: int
+    ) -> list[models.Organization]:
         return (
             self.db.query(self.model)
             .filter(self.model.building_id == building_id)
@@ -45,11 +48,18 @@ class OrganizationRepository(BaseRepository[models.Organization]):
             .all()
         )
 
-    def get_by_activity_ids(self, activity_ids: list[int]) -> list[models.Organization]:
+    def get_by_activity_ids(
+        self,
+        activity_ids: list[int]
+    ) -> list[models.Organization]:
         return (
             self.db.query(self.model)
             .join(models.organization_activity_association)
-            .filter(models.organization_activity_association.c.activity_id.in_(activity_ids))
+            .filter(
+                models.organization_activity_association.c.activity_id.in_(
+                    activity_ids
+                )
+            )
             .options(
                 joinedload(self.model.building),
                 joinedload(self.model.phone_numbers),
@@ -59,7 +69,10 @@ class OrganizationRepository(BaseRepository[models.Organization]):
             .all()
         )
 
-    def get_by_building_ids(self, building_ids: list[int]) -> list[models.Organization]:
+    def get_by_building_ids(
+        self,
+        building_ids: list[int]
+    ) -> list[models.Organization]:
         return (
             self.db.query(self.model)
             .filter(self.model.building_id.in_(building_ids))
