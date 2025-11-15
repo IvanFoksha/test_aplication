@@ -1,17 +1,45 @@
-# Use an official Python runtime as a parent image
-FROM python:3.11-slim
+# ---- Builder Stage ----
+# This stage installs dependencies into a virtual environment.
+FROM python:3.11 AS builder
 
-# Set the working directory in the container
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
-# Copy the requirements file into the container at /app
-COPY ./requirements.txt /app/requirements.txt
+# Create a virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
+# Install dependencies
+COPY ./requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application's code into the container at /app
-COPY . /app
+
+# ---- Production Stage ----
+# This stage copies the installed venv and the application code.
+FROM python:3.11-slim AS production
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Create a non-root user
+RUN addgroup --system nonroot && adduser --system --group nonroot
+WORKDIR /home/nonroot/app
+
+# Copy virtual environment from builder stage
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy application code
+COPY . .
+
+# Change ownership of the app directory
+RUN chown -R nonroot:nonroot /home/nonroot/app
+
+# Switch to the non-root user
+USER nonroot
+
+# Make the venv's python executable available to the user
+ENV PATH="/opt/venv/bin:$PATH"
 
 # Expose the port the app runs on
 EXPOSE 8000
