@@ -6,6 +6,7 @@ from sqlalchemy import text
 from app.db import models, schemas
 from app.db.session import get_db
 from app.api.dependencies import get_api_key
+from app.services.buildings import BuildingService, get_building_service
 
 router = APIRouter(
     prefix="/api/v1",
@@ -13,18 +14,15 @@ router = APIRouter(
 )
 
 @router.get("/buildings/", response_model=List[schemas.Building])
-def read_buildings(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_buildings(
+    skip: int = 0, 
+    limit: int = 100, 
+    service: BuildingService = Depends(get_building_service)
+):
     """
     Retrieve a list of buildings with their associated organizations.
     """
-    buildings = (
-        db.query(models.Building)
-        .options(joinedload(models.Building.organizations))
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
-    return buildings
+    return service.get_all_buildings(skip=skip, limit=limit)
 
 
 @router.get("/organizations/{organization_id}", response_model=schemas.Organization)
@@ -176,7 +174,7 @@ def search_organizations_by_location(
     )
 
     building_ids = [row[0] for row in buildings_within_radius]
-    
+
     if not building_ids:
         return []
 
