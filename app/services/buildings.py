@@ -5,7 +5,7 @@ from app.repositories.buildings import BuildingRepository
 
 
 class BuildingService:
-    def __init__(self, building_repo: BuildingRepository = Depends()):
+    def __init__(self, building_repo: BuildingRepository):
         self.building_repo = building_repo
 
     def get_all_buildings(self, skip: int = 0, limit: int = 100):

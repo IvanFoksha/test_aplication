@@ -1,10 +1,6 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import text
-
-from app.db import models, schemas
-from app.db.session import get_db
+from fastapi import APIRouter, Depends, Query
+from app.db import schemas
 from app.api.dependencies import get_api_key
 from app.services.buildings import BuildingService, get_building_service
 from app.services.organizations import OrganizationService, get_organization_service
@@ -17,8 +13,8 @@ router = APIRouter(
 
 @router.get("/buildings/", response_model=List[schemas.Building])
 def read_buildings(
-    skip: int = 0, 
-    limit: int = 100, 
+    skip: int = 0,
+    limit: int = 100,
     service: BuildingService = Depends(get_building_service)
 ):
     """

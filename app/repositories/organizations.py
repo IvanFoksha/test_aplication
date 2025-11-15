@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import text
 from app.db import models
 from app.repositories.base import BaseRepository
 

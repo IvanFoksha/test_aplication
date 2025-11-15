@@ -1,6 +1,5 @@
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from sqlalchemy import text
 from app.db.session import get_db
 from app.repositories.organizations import OrganizationRepository
 from app.repositories.activities import ActivityRepository
@@ -10,9 +9,9 @@ from app.repositories.buildings import BuildingRepository
 class OrganizationService:
     def __init__(
         self,
-        org_repo: OrganizationRepository = Depends(),
-        activity_repo: ActivityRepository = Depends(),
-        building_repo: BuildingRepository = Depends(),
+        org_repo: OrganizationRepository,
+        activity_repo: ActivityRepository,
+        building_repo: BuildingRepository,
     ):
         self.org_repo = org_repo
         self.activity_repo = activity_repo
