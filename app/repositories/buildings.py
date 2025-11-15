@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import text
 from app.db import models
 from app.repositories.base import BaseRepository
 
@@ -15,3 +16,27 @@ class BuildingRepository(BaseRepository[models.Building]):
             .limit(limit)
             .all()
         )
+
+    def get_ids_within_radius(self, latitude: float, longitude: float, radius: float) -> list[int]:
+        """
+        Calculates and finds building IDs within a given radius from a central point.
+        Uses the Haversine formula.
+        """
+        distance_sql = text("""
+            6371 * acos(
+                cos(radians(:lat)) * cos(radians(latitude)) *
+                cos(radians(longitude) - radians(:lon)) +
+                sin(radians(:lat)) * sin(radians(latitude))
+            )
+        """)
+
+        buildings_within_radius = (
+            self.db.query(self.model.id)
+            .from_statement(
+                text("SELECT id FROM buildings WHERE (:distance_sql) < :radius")
+                .bindparams(distance_sql=distance_sql)
+            )
+            .params(lat=latitude, lon=longitude, radius=radius)
+            .all()
+        )
+        return [row[0] for row in buildings_within_radius]
