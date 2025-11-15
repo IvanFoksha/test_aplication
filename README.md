@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-
-# test_aplication
-
-=======
-
 # Справочник Организаций API
 
 Это REST API для справочника организаций, зданий и видов деятельности, реализованное в рамках тестового задания.
@@ -116,5 +110,3 @@
 ```bash
 docker-compose down
 ```
-
-> > > > > > > 6023d3c (docs: Add comprehensive project documentation)
